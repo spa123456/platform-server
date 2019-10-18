@@ -1,9 +1,9 @@
-var creatmysql = require('./diaper/createtablediaper')//引入上传数据库
+var creatmysql = require('./diaper/createtablediaper') //引入上传数据库
 var express = require('express')
 var app = new express
 var querysql = require('./diaper/querydiaper')
 
-var File = require('./diaper/uploadimage')//引入上传图片json文件
+var File = require('./diaper/uploadimage') //引入上传图片json文件
 
 var bodyParser = require('body-parser')
 app.use(bodyParser.json({
@@ -25,11 +25,11 @@ app.use(function (req, res, next) {
     }
 })
 /*
-**  @description 上传尿不湿接口
-**  @param {} 
-**  @return 
-**  @author shipingan
-*/
+ **  @description 上传尿不湿接口
+ **  @param {} 
+ **  @return 
+ **  @author shipingan
+ */
 app.post('/adddiaperproduct', (req, res) => {
     let imageJSONfile = { //用于存储JSON文件到本地，查询图片的时候本地查询json
         "mainimageurl": req.body.mainimgurl,
@@ -52,25 +52,52 @@ app.post('/adddiaperproduct', (req, res) => {
     creatmysql.creatwritetable(params) //写入数据库
     // console.log(res);
     let content = {
-        status:"OK"
+        status: "OK"
     }
     res.json(content)
 })
 
 /*
-**  @description 查询diaper数据渲染
-**  @param {} 
-**  @return 
-**  @author shipingan
-*/
+ **  @description 查询diaper数据渲染
+ **  @param {} 
+ **  @return 
+ **  @author shipingan
+ */
 
-app.post('/getdiaperdetalis',(req,res) => {
+app.post('/getdiaperdetalis', (req, res) => {
     let querydiaper = `SELECT * FROM diaper`
-    querysql.query(querydiaper,[],(result)=>{
+    querysql.query(querydiaper, [], (result) => {
         var data = JSON.parse(JSON.stringify(result))
         res.send(data)
     })
 })
+
+/*
+ **  @description 删除diaper数据
+ **  @param {} 
+ **  @return 
+ **  @author shipingan
+ */
+
+app.post('/removediaperFile', (req, res) => {
+    // 删除图片json文件
+    let path = req.body.path
+    var remove = new File('', '')
+    remove.removeFile(path)
+    //删除数据库
+    let id = req.body.id
+    let removediapersql = `DELETE FROM diaper where id=${id}`
+    querysql.query(removediapersql, (err, result) => {
+        if (err) {
+            console.log(err);
+            return
+        }
+        res.json("删除成功")
+    })
+
+
+})
+
 
 var server = app.listen(3000, function () {
 

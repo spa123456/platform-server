@@ -14,4 +14,14 @@ File.prototype.weiteFile = function (name, data) {
         console.log("写好了");
     })
 }
+
+File.prototype.removeFile = function (path) {
+    fs.unlink(path,err=>{
+        if (err) {
+            console.log(err);
+            return
+        }
+        console.log("删除成功");
+    })
+}
 module.exports = File
