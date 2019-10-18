@@ -114,19 +114,8 @@ app.post('/getdiaperdetalis', (req, res) => {
         let address = data[0].address
         //获取数据库中图片的地址，把json文件传出去
         var fs = require('fs')
-        csaa(address)
-        function csaa(path,detalis) {
-            fs.readFile(path,'utf-8',(err,data)=>{
-                if (err) {
-                    console.log(err);
-                    return
-                }
-                console.log(data);
-                
-            })
-        }
 
-        // requerimage(address,data)
+        requerimage(address,data)
         function requerimage(path,detalis) {
             var data = ''
             //创建文件流
@@ -146,10 +135,7 @@ app.post('/getdiaperdetalis', (req, res) => {
             readerStream.on('error', function (err) {
                 console.log(err.stack);
             });
-
         }
-
-        // res.json(data)
     })
 })
 
