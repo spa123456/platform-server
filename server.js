@@ -64,7 +64,7 @@ app.post('/adddiaperproduct', (req, res) => {
  **  @author shipingan
  */
 
-app.post('/getdiaperdetalis', (req, res) => {
+app.post('/getdiaperlistdetalis', (req, res) => {
     let querydiaper = `SELECT * FROM diaper`
     querysql.query(querydiaper, [], (result) => {
         var data = JSON.parse(JSON.stringify(result))
@@ -96,6 +96,61 @@ app.post('/removediaperFile', (req, res) => {
     })
 
 
+})
+
+/*
+ **  @description 查询diaper数据详情
+ **  @param {} 
+ **  @return 
+ **  @author shipingan
+ */
+app.post('/getdiaperdetalis', (req, res) => {
+
+    //通过ID查询数据库数据
+    let querydiaperdetalis = `SELECT * FROM diaper`
+    querysql.query(querydiaperdetalis, [], result => {
+
+        let data = JSON.parse(JSON.stringify(result))
+        let address = data[0].address
+        //获取数据库中图片的地址，把json文件传出去
+        var fs = require('fs')
+        csaa(address)
+        function csaa(path,detalis) {
+            fs.readFile(path,'utf-8',(err,data)=>{
+                if (err) {
+                    console.log(err);
+                    return
+                }
+                console.log(data);
+                
+            })
+        }
+
+        // requerimage(address,data)
+        function requerimage(path,detalis) {
+            var data = ''
+            //创建文件流
+            var readerStream = fs.createReadStream(path);
+            // 设置编码为 utf8。
+            readerStream.setEncoding('UTF8');
+            readerStream.on('data', function (chunk) {
+                data += chunk;
+            });
+            readerStream.on('end', function () {
+                let dataAll = {
+                    data:detalis,
+                    imagedetalis:data
+                }
+                res.json(dataAll) 
+            });
+            readerStream.on('error', function (err) {
+                console.log(err.stack);
+            });
+
+        }
+
+        // res.json(data)
+    })
 })
 
 
