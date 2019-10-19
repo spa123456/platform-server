@@ -4,7 +4,6 @@ var app = new express
 var querysql = require('./diaper/querydiaper')
 
 var File = require('./diaper/uploadimage') //引入上传图片json文件
-
 var bodyParser = require('body-parser')
 app.use(bodyParser.json({
     limit: "100mb"
@@ -35,15 +34,16 @@ app.post('/adddiaperproduct', (req, res) => {
         "mainimageurl": req.body.mainimgurl,
         "detailsurl": req.body.detailsurl,
     }
-    let jsonname = req.body.name
+    let timeDate = req.body.timeDate
     let filename = req.body.filename
-    var diaperfile = new File(jsonname, imageJSONfile,filename) //实例化一个构造函数，存储本地图片JSON
-    diaperfile.weiteFile(jsonname, imageJSONfile,filename) //此处图片存储成功
-
-    let mysqladdress = `./diaper/imagefile/${filename}${jsonname}.json` //json文件的地址
+    console.log(timeDate);
+    
+    var diaperfile = new File(timeDate, imageJSONfile,filename) //实例化一个构造函数，存储本地图片JSON
+    diaperfile.weiteFile(timeDate, imageJSONfile,filename) //此处图片存储成功
+    let mysqladdress = `./diaper/imagefile/${filename+timeDate}.json` //json文件的地址
     let params = {
         address: mysqladdress,
-        name: jsonname,
+        name: req.body.name,
         number: req.body.number,
         moduls: req.body.moduls,
         weixin: req.body.weixin,
