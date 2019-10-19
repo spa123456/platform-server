@@ -105,9 +105,9 @@ app.post('/removediaperFile', (req, res) => {
  **  @author shipingan
  */
 app.post('/getdiaperdetalis', (req, res) => {
-
+    
     //通过ID查询数据库数据
-    let querydiaperdetalis = `SELECT * FROM diaper`
+    let querydiaperdetalis = `SELECT * FROM diaper where id=${req.body.id}`
     querysql.query(querydiaperdetalis, [], result => {
 
         let data = JSON.parse(JSON.stringify(result))
