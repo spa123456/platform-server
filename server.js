@@ -36,10 +36,11 @@ app.post('/adddiaperproduct', (req, res) => {
         "detailsurl": req.body.detailsurl,
     }
     let jsonname = req.body.name
-    var diaperfile = new File(jsonname, imageJSONfile) //实例化一个构造函数，存储本地图片JSON
-    diaperfile.weiteFile(jsonname, imageJSONfile) //此处图片存储成功
+    let filename = req.body.filename
+    var diaperfile = new File(jsonname, imageJSONfile,filename) //实例化一个构造函数，存储本地图片JSON
+    diaperfile.weiteFile(jsonname, imageJSONfile,filename) //此处图片存储成功
 
-    let mysqladdress = './diaper/imagefile/diaper' + jsonname + '.json' //json文件的地址
+    let mysqladdress = `./diaper/imagefile/${filename}${jsonname}.json` //json文件的地址
     let params = {
         address: mysqladdress,
         name: jsonname,
@@ -49,7 +50,8 @@ app.post('/adddiaperproduct', (req, res) => {
         phone: req.body.phone,
         expain: req.body.expain
     }
-    creatmysql.creatwritetable(params) //写入数据库
+    
+    creatmysql.creatwritetable(params,filename) //写入数据库
     // console.log(res);
     let content = {
         status: "OK"
@@ -65,7 +67,7 @@ app.post('/adddiaperproduct', (req, res) => {
  */
 
 app.post('/getdiaperlistdetalis', (req, res) => {
-    let querydiaper = `SELECT * FROM diaper`
+    let querydiaper = `SELECT * FROM ${req.body.filename}`
     querysql.query(querydiaper, [], (result) => {
         var data = JSON.parse(JSON.stringify(result))
         res.send(data)
@@ -83,10 +85,13 @@ app.post('/removediaperFile', (req, res) => {
     // 删除图片json文件
     let path = req.body.path
     var remove = new File('', '')
+    console.log(path);
+    
     remove.removeFile(path)
     //删除数据库
     let id = req.body.id
-    let removediapersql = `DELETE FROM diaper where id=${id}`
+    let filename = req.body.filename
+    let removediapersql = `DELETE FROM ${filename} where id=${id}`
     querysql.query(removediapersql, (err, result) => {
         if (err) {
             console.log(err);
@@ -105,9 +110,10 @@ app.post('/removediaperFile', (req, res) => {
  **  @author shipingan
  */
 app.post('/getdiaperdetalis', (req, res) => {
-    
+    let filename = req.body.filename
+    let id = req.body.id
     //通过ID查询数据库数据
-    let querydiaperdetalis = `SELECT * FROM diaper where id=${req.body.id}`
+    let querydiaperdetalis = `SELECT * FROM ${filename} where id=${id}`
     querysql.query(querydiaperdetalis, [], result => {
 
         let data = JSON.parse(JSON.stringify(result))

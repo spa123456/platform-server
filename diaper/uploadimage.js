@@ -1,8 +1,9 @@
 var fs = require("fs")
 
-function File(name, data) {
+function File(name, data,filename) {
     this.name = name
     this.data = data
+    this.filename = filename
 }
 
 /*
@@ -11,10 +12,11 @@ function File(name, data) {
  **  @return 
  **  @author shipingan
  */
-File.prototype.weiteFile = function (name, data) {
+File.prototype.weiteFile = function (name, data,filename) {
     this.name = name
     this.data = data
-    fs.writeFile('./diaper/imagefile/diaper' + name + '.json', JSON.stringify(data), (err) => {
+    this.filename = filename
+    fs.writeFile(`./diaper/imagefile/${filename}${name}.json`, JSON.stringify(data), (err) => {
         if (err) {
             console.log(err);
             return

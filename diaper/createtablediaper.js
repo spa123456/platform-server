@@ -8,9 +8,10 @@ var connection = mysql.createConnection({
     database: 'product',
 })
 connection.connect()
-
-function creatwritetable(data) {
+// 数据 文件名
+function creatwritetable(data,filename) {
     let propdata = data
+    let file = filename
     let showtable = "SHOW TABLES"
     connection.query(showtable, (err, results) => {
         if (err) {
@@ -20,14 +21,14 @@ function creatwritetable(data) {
 
         var data = JSON.parse(JSON.stringify(results))
         if (data == '') {
-            caertediapertable(propdata)
+            caertediapertable(propdata,file)
         } else {
             data.map(res => {
-                if (res.Tables_in_product == "diaper") {
+                if (res.Tables_in_product == file) {
                     //调用写数据
-                    weitediaperdata(propdata)
+                    weitediaperdata(propdata,file)
                 } else {
-                    caertediapertable(propdata)
+                    caertediapertable(propdata,file)
                 }
             })
         }
@@ -44,14 +45,14 @@ function creatwritetable(data) {
  **  @return 
  **  @author shipingan
  */
-function caertediapertable(data) {
-    let creattable = "CREATE TABLE diaper (id INT(100) UNSIGNED AUTO_INCREMENT,address varchar(1000),name varchar(1000),number varchar(1000),moduls varchar(1000),weixin varchar(1000),phone varchar(1000),expain varchar(20000),PRIMARY KEY (id))ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+function caertediapertable(data,filename) {
+    let creattable = `CREATE TABLE ${filename} (id INT(100) UNSIGNED AUTO_INCREMENT,address varchar(1000),name varchar(1000),number varchar(1000),moduls varchar(1000),weixin varchar(1000),phone varchar(1000),expain varchar(20000),PRIMARY KEY (id))ENGINE=InnoDB DEFAULT CHARSET=utf8;`
     connection.query(creattable, (err, results) => {
         if (err) {
             console.log(err);
             return
         }
-        weitediaperdata(data)
+        weitediaperdata(data,filename)
     })
 }
 
@@ -61,13 +62,13 @@ function caertediapertable(data) {
  **  @return 
  **  @author shipingan
  */
-function weitediaperdata(data) {
+function weitediaperdata(data,filename) {
     let details = []
     for (const key in data) {
        details.push(data[key])
     }
     
-    let writedata = `INSERT INTO diaper (id,address,name,number,moduls,weixin,phone,expain) VALUES (0,?,?,?,?,?,?,?)`
+    let writedata = `INSERT INTO ${filename} (id,address,name,number,moduls,weixin,phone,expain) VALUES (0,?,?,?,?,?,?,?)`
     connection.query(writedata, details, (err, results) => {
         if (err) {
             console.log(err);
