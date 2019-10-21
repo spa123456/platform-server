@@ -24,7 +24,7 @@ app.use(function (req, res, next) {
     }
 })
 /*
- **  @description 上传尿不湿接口
+ **  @description 上传产品接口
  **  @param {} 
  **  @return 
  **  @author shipingan
@@ -34,13 +34,21 @@ app.post('/adddiaperproduct', (req, res) => {
         "mainimageurl": req.body.mainimgurl,
         "detailsurl": req.body.detailsurl,
     }
-    let timeDate = req.body.timeDate
-    let filename = req.body.filename
-    console.log(timeDate);
+    let timeDate = req.body.timeDate//时间戳
+    let filename = req.body.filename//数据库明
+    let address = req.body.address//接受地址
+    let id = req.body.id//产品ID
+    let mysqladdress = ''
     
-    var diaperfile = new File(timeDate, imageJSONfile,filename) //实例化一个构造函数，存储本地图片JSON
-    diaperfile.weiteFile(timeDate, imageJSONfile,filename) //此处图片存储成功
-    let mysqladdress = `./diaper/imagefile/${filename+timeDate}.json` //json文件的地址
+    if (address == '') {
+        mysqladdress = `./diaper/imagefile/${filename+timeDate}.json` //json文件的地址
+    }else{
+        mysqladdress = address
+    }
+    console.log(imageJSONfile);
+    
+    var diaperfile = new File(mysqladdress, imageJSONfile, filename) //实例化一个构造函数，存储本地图片JSON
+    diaperfile.weiteFile(mysqladdress, imageJSONfile) //此处图片存储成功
     let params = {
         address: mysqladdress,
         name: req.body.name,
@@ -49,12 +57,20 @@ app.post('/adddiaperproduct', (req, res) => {
         weixin: req.body.weixin,
         phone: req.body.phone,
         expain: req.body.expain,
-        money:req.body.money,
-        discount:req.body.discount
+        money: req.body.money,
+        discount: req.body.discount
     }
-    
-    creatmysql.creatwritetable(params,filename) //写入数据库
-    // console.log(res);
+//判断有没有传入ID，如过传入ID就是更新数据，
+    console.log(id);
+
+    if (id =='') {
+        creatmysql.creatwritetable(params, filename) //写入数据库
+    }else{
+        //修改数据
+        creatmysql.updateproudict(id,params,filename) 
+    }
+
+
     let content = {
         status: "OK"
     }
@@ -88,7 +104,7 @@ app.post('/removediaperFile', (req, res) => {
     let path = req.body.path
     var remove = new File('', '')
     console.log(path);
-    
+
     remove.removeFile(path)
     //删除数据库
     let id = req.body.id
@@ -123,8 +139,9 @@ app.post('/getdiaperdetalis', (req, res) => {
         //获取数据库中图片的地址，把json文件传出去
         var fs = require('fs')
 
-        requerimage(address,data)
-        function requerimage(path,detalis) {
+        requerimage(address, data)
+
+        function requerimage(path, detalis) {
             var data = ''
             //创建文件流
             var readerStream = fs.createReadStream(path);
@@ -135,10 +152,10 @@ app.post('/getdiaperdetalis', (req, res) => {
             });
             readerStream.on('end', function () {
                 let dataAll = {
-                    data:detalis,
-                    imagedetalis:data
+                    data: detalis,
+                    imagedetalis: data
                 }
-                res.json(dataAll) 
+                res.json(dataAll)
             });
             readerStream.on('error', function (err) {
                 console.log(err.stack);

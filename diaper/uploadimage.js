@@ -12,11 +12,8 @@ function File(name, data,filename) {
  **  @return 
  **  @author shipingan
  */
-File.prototype.weiteFile = function (name, data,filename) {
-    this.name = name
-    this.data = data
-    this.filename = filename
-    fs.writeFile(`./diaper/imagefile/${filename+name}.json`, JSON.stringify(data), (err) => {
+File.prototype.weiteFile = function (mysqladdress, data) {
+    fs.writeFile(mysqladdress, JSON.stringify(data), (err) => {
         if (err) {
             console.log(err);
             return
