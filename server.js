@@ -48,7 +48,9 @@ app.post('/adddiaperproduct', (req, res) => {
         moduls: req.body.moduls,
         weixin: req.body.weixin,
         phone: req.body.phone,
-        expain: req.body.expain
+        expain: req.body.expain,
+        money:req.body.money,
+        discount:req.body.discount
     }
     
     creatmysql.creatwritetable(params,filename) //写入数据库
