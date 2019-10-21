@@ -68,7 +68,7 @@ function weitediaperdata(data,filename) {
        details.push(data[key])
     }
     
-    let writedata = `INSERT INTO ${filename} (id,address,name,number,moduls,weixin,phone,expain) VALUES (0,?,?,?,?,?,?,?)`
+    let writedata = `INSERT INTO ${filename} (id,address,name,number,moduls,weixin,phone,expain,money,discount) VALUES (0,?,?,?,?,?,?,?,?,?)`
     connection.query(writedata, details, (err, results) => {
         if (err) {
             console.log(err);
