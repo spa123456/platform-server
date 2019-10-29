@@ -34,19 +34,19 @@ app.post('/adddiaperproduct', (req, res) => {
         "mainimageurl": req.body.mainimgurl,
         "detailsurl": req.body.detailsurl,
     }
-    let timeDate = req.body.timeDate//时间戳
-    let filename = req.body.filename//数据库明
-    let address = req.body.address//接受地址
-    let id = req.body.id//产品ID
+    let timeDate = req.body.timeDate //时间戳
+    let filename = req.body.filename //数据库明
+    let address = req.body.address //接受地址
+    let id = req.body.id //产品ID
     let mysqladdress = ''
-    
+
     if (address == '') {
         mysqladdress = `./diaper/imagefile/${filename+timeDate}.json` //json文件的地址
-    }else{
+    } else {
         mysqladdress = address
     }
     console.log(imageJSONfile);
-    
+
     var diaperfile = new File(mysqladdress, imageJSONfile, filename) //实例化一个构造函数，存储本地图片JSON
     diaperfile.weiteFile(mysqladdress, imageJSONfile) //此处图片存储成功
     let params = {
@@ -60,14 +60,14 @@ app.post('/adddiaperproduct', (req, res) => {
         money: req.body.money,
         discount: req.body.discount
     }
-//判断有没有传入ID，如过传入ID就是更新数据，
+    //判断有没有传入ID，如过传入ID就是更新数据，
     console.log(id);
 
-    if (id =='') {
+    if (id == '') {
         creatmysql.creatwritetable(params, filename) //写入数据库
-    }else{
+    } else {
         //修改数据
-        creatmysql.updateproudict(id,params,filename) 
+        creatmysql.updateproudict(id, params, filename)
     }
 
 
@@ -92,6 +92,33 @@ app.post('/getdiaperlistdetalis', (req, res) => {
     })
 })
 
+/*
+ **  @description 查询主图图片
+ **  @param {} 
+ **  @return 
+ **  @author shipingan
+ */
+app.post('/getmainimage', (req, res) => {
+    let queryjsonaddress = req.body.address //取货查询json图片的地址
+    var fs = require('fs')
+    querymainimage(queryjsonaddress)
+    function querymainimage(address) {
+        var data = ''
+        //创建文件流
+        var readerStream = fs.createReadStream(address);
+        // 设置编码为 utf8。
+        readerStream.setEncoding('UTF8');
+        readerStream.on('data', function (chunk) {
+            data += chunk;
+        });
+        readerStream.on('end', function () {
+            res.json(data)
+        });
+        readerStream.on('error', function (err) {
+            console.log(err.stack);
+        });
+    }
+})
 /*
  **  @description 删除diaper数据
  **  @param {} 
@@ -123,7 +150,7 @@ app.post('/removediaperFile', (req, res) => {
 
 /*
  **  @description 查询diaper数据详情
- **  @param {} 
+ **  @param {} filename
  **  @return 
  **  @author shipingan
  */
@@ -163,16 +190,14 @@ app.post('/getdiaperdetalis', (req, res) => {
         }
     })
 })
-app.get('/getabc',(req,res)=>{
-    res.json("获取get")
-})
+
 
 var server = app.listen(3001, function () {
 
     var host = server.address().address;
 
     var port = server.address().port;
-    
-    
+
+
     console.log('Example app listening at http://%s:%s', host, port);
 })
