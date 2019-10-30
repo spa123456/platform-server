@@ -165,30 +165,42 @@ app.post('/getdiaperdetalis', (req, res) => {
         let data = JSON.parse(JSON.stringify(result))
         let address = data[0].address
         //获取数据库中图片的地址，把json文件传出去
+            
         var fs = require('fs')
+        fs.readFile(address,(err,resultjson)=>{
+            if (err) {
+                console.log(err);
+            }
+            let dataAll = {
+                data: data,
+                imagedetalis: resultjson.toString()
+            }
+            res.json(dataAll)
+        })
 
-        requerimage(address, data)
+        // requerimage(address, data)
 
-        function requerimage(path, detalis) {
-            var data = ''
-            //创建文件流
-            var readerStream = fs.createReadStream(path);
-            // 设置编码为 utf8。
-            readerStream.setEncoding('UTF8');
-            readerStream.on('data', function (chunk) {
-                data += chunk;
-            });
-            readerStream.on('end', function () {
-                let dataAll = {
-                    data: detalis,
-                    imagedetalis: data
-                }
-                res.json(dataAll)
-            });
-            readerStream.on('error', function (err) {
-                console.log(err.stack);
-            });
-        }
+        // function requerimage(path, detalis) {
+        //     var data = ''
+        //     //创建文件流
+        //     var readerStream = fs.createReadStream(path);
+        //     // 设置编码为 utf8。
+        //     readerStream.setEncoding('UTF8');
+        //     readerStream.on('data', function (chunk) {
+        //         data += chunk;
+        //     });
+        //     readerStream.on('end', function () {
+        //     let dataAll = {
+        //         data: detalis,
+        //         imagedetalis: data
+        //     }
+            
+        //     res.json(dataAll)
+        //     });
+        //     readerStream.on('error', function (err) {
+        //         console.log(err.stack);
+        //     });
+        // }
     })
 })
 
