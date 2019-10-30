@@ -53,7 +53,7 @@ function creatwritetable(data, filename) {
  **  @author shipingan
  */
 function caertediapertable(data, filename) {
-    let creattable = `CREATE TABLE ${filename} (id INT(100) UNSIGNED AUTO_INCREMENT,address varchar(1000),name varchar(1000),number varchar(1000),moduls varchar(1000),weixin varchar(1000),phone varchar(1000),expain varchar(10000),money INT(100),discount varchar(10),PRIMARY KEY (id))ENGINE=InnoDB DEFAULT CHARSET=utf8;`
+    let creattable = `CREATE TABLE ${filename} (id INT(100) UNSIGNED AUTO_INCREMENT,address varchar(1000),name varchar(1000),number varchar(1000),moduls varchar(1000),weixin varchar(1000),phone varchar(1000),expain varchar(10000),money varchar(1000),discount varchar(10),PRIMARY KEY (id))ENGINE=InnoDB DEFAULT CHARSET=utf8;`
     connection.query(creattable, (err, results) => {
         if (err) {
             console.log(err);
