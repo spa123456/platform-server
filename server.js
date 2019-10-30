@@ -38,17 +38,19 @@ app.post('/adddiaperproduct', (req, res) => {
     let filename = req.body.filename //数据库明
     let address = req.body.address //接受地址
     let id = req.body.id //产品ID
-    let mysqladdress = ''
+    let mysqladdress = ''    
 
+
+    var diaperfile = new File() //实例化一个构造函数，存储本地图片JSON
     if (address == '') {
         mysqladdress = `./diaper/imagefile/${filename+timeDate}.json` //json文件的地址
     } else {
         mysqladdress = address
+        diaperfile.removeFile(mysqladdress)
     }
-    console.log(imageJSONfile);
-
-    var diaperfile = new File(mysqladdress, imageJSONfile, filename) //实例化一个构造函数，存储本地图片JSON
     diaperfile.weiteFile(mysqladdress, imageJSONfile) //此处图片存储成功
+
+
     let params = {
         address: mysqladdress,
         name: req.body.name,
@@ -62,7 +64,7 @@ app.post('/adddiaperproduct', (req, res) => {
     }
     //判断有没有传入ID，如过传入ID就是更新数据，
     console.log(id);
-
+    
     if (id == '') {
         creatmysql.creatwritetable(params, filename) //写入数据库
     } else {
@@ -129,8 +131,7 @@ app.post('/getmainimage', (req, res) => {
 app.post('/removediaperFile', (req, res) => {
     // 删除图片json文件
     let path = req.body.path
-    var remove = new File('', '')
-    console.log(path);
+    var remove = new File()
 
     remove.removeFile(path)
     //删除数据库

@@ -1,9 +1,7 @@
 var fs = require("fs")
 
-function File(name, data,filename) {
-    this.name = name
-    this.data = data
-    this.filename = filename
+function File() {
+
 }
 
 /*
